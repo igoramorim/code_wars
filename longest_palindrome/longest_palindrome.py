@@ -1,3 +1,5 @@
+# https://www.codewars.com/kata/54bb6f887e5a80180900046b
+
 # Find the length of the longest substring in the given string s that is the same in reverse.
 #
 # As an example, if the input was “I like racecars that go fast”, the substring (racecar) length would be 7.

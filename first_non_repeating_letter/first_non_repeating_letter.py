@@ -1,3 +1,5 @@
+# https://www.codewars.com/kata/52bc74d4ac05d0945d00054e
+
 # Write a function named firstNonRepeatingLetter† that takes a string input, and
 # returns the first character that is not repeated anywhere in the string.
 #
@@ -15,27 +17,10 @@
 
 
 def first_non_repeating_letter(string):
-    if len(string) == 1:
-        return string
-
-    if string:
-        chars = {}
-        for char in string.lower():
-            chars[char] = string.lower().count(char)
-
-        if len(set(chars.values())) == 1:
-            return ''
-
-        #TODO: verificar quando a string possui somente um caracter
-
-        char = min(chars, key=chars.get)
-
-        if string.find(char) != -1:
+    for char in string:
+        if string.lower().count(char.lower()) == 1:
             return char
-        else:
-            return char.swapcase()
-    else:
-        return ''
+    return ''
 
 
 print(first_non_repeating_letter('a')) # 'a'
@@ -47,4 +32,4 @@ print(first_non_repeating_letter('aa')) # ''
 print(first_non_repeating_letter('~><#~><')) # '#'
 print(first_non_repeating_letter('hello world, eh?')) # 'w'
 print(first_non_repeating_letter('sTreSS')) # 'T'
-print(first_non_repeating_letter('Go hang a salami, I\'m a lasagna hog!')) # ';'
+print(first_non_repeating_letter('Go hang a salami, I\'m a lasagna hog!')) # ','

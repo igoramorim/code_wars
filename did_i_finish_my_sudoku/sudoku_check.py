@@ -1,3 +1,5 @@
+# https://www.codewars.com/kata/53db96041f1a7d32dc0004d2
+
 # Write a function done_or_not/DoneOrNot passing a board (list[list_lines]) as
 # parameter. If the board is valid return 'Finished!', otherwise return 'Try again!'
 

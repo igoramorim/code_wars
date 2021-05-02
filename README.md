@@ -1,5 +1,5 @@
 # code_wars
 
-My Codewars solutions in Python.
+My Codewars solutions
 
 https://www.codewars.com/users/igoramorim
