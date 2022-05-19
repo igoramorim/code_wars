@@ -19,8 +19,16 @@ func TestDecodeMultipleBitsPerDot2(t *testing.T) {
 }
 
 func TestDecodeMultipleBitsPerDot3(t *testing.T) {
-	want := "M"
+	want := "I"
 	result := DecodeMorse(DecodeBits("110011"))
+	if want != result {
+		t.Fatalf("Excepted: %s Got: %s", want, result)
+	}
+}
+
+func TestDecodeMultipleBitsPerDot4(t *testing.T) {
+	want := "I"
+	result := DecodeMorse(DecodeBits("111000111"))
 	if want != result {
 		t.Fatalf("Excepted: %s Got: %s", want, result)
 	}

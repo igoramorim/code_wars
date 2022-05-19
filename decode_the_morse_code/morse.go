@@ -1,8 +1,6 @@
 package kata
 
 import (
-	"fmt"
-	"sort"
 	"strings"
 )
 
@@ -99,43 +97,30 @@ the particular sequence of 1's is a dot or a dash, assume it's a dot.
 2. Function decodeMorse(morseCode), that would take the output of the previous function and return a human-readable string.
 */
 func DecodeBits(bits string) string {
-	timeUnit := CalcTimeUnit(bits)
-	if timeUnit == 0 {
-		return "."
-	}
+	timeUnit := calcTimeUnit(bits)
+
+	// "Dot" – is 1 time unit long.
+	dot := strings.Repeat("1", timeUnit)
 	// "Dash" – is 3 time units long
 	dash := strings.Repeat("111", timeUnit)
+	// Pause between dots and dashes in a character – is 1 time unit long.
+	pause := strings.Repeat("0", timeUnit)
 	// Pause between characters inside a word – is 3 time units long.
 	pauseBetweenChars := strings.Repeat("000", timeUnit)
 	// Pause between words – is 7 time units long.
 	pauseBetweenWords := strings.Repeat("0000000", timeUnit)
 
 	var b strings.Builder
-	pulses := 0
 	bits = strings.TrimLeft(bits, "0")
+	bits = strings.TrimRight(bits, "0")
 
 	for _, word := range strings.Split(bits, pauseBetweenWords) {
-		chars := strings.Split(word, pauseBetweenChars)
-		for _, char := range chars {
-			for i, bit := range char {
-				var nextBit rune
-
-				if i == len(char)-1 { // if last bit
-					nextBit = '0' // assume the next is 0 even if it does'n exist
-				} else {
-					nextBit = rune(char[i+1])
-				}
-
-				if bit == '1' {
-					pulses++
-					if nextBit == '0' {
-						if pulses < len(dash) {
-							b.WriteString(".")
-						} else {
-							b.WriteString("-")
-						}
-						pulses = 0
-					}
+		for _, char := range strings.Split(word, pauseBetweenChars) {
+			for _, code := range strings.Split(char, pause) {
+				if code == dot {
+					b.WriteString(".")
+				} else if code == dash {
+					b.WriteString("-")
 				}
 			}
 			b.WriteString(" ")
@@ -146,45 +131,38 @@ func DecodeBits(bits string) string {
 	return strings.TrimRight(b.String(), " ")
 }
 
-func CalcTimeUnit(bits string) int {
-	// If there is no pause we cant compare
-	// the pulses to see whether it is a dot or dash
-	if !strings.Contains(bits, "0") {
-		return 0
-	}
+// The need here is to detect the length of the smallest unit pulse or pause
+func calcTimeUnit(bits string) int {
+	bits = strings.TrimLeft(bits, "0")
+	bits = strings.TrimRight(bits, "0")
 
 	fieldsPulse := strings.FieldsFunc(bits, func(c rune) bool { return c == '0' })
 	fieldsPause := strings.FieldsFunc(bits, func(c rune) bool { return c == '1' })
 
-	m := make(map[string]int)
-	// We only need 2 entries
-	// one for dot and one for dash to compare
-	for _, field := range fieldsPulse {
-		if len(m) == 2 {
-			break
-		}
-		if _, exists := m[field]; !exists {
-			m[field] = len(field)
+	lenBits := len(bits)
+	minPulse, minPause := lenBits, lenBits
+
+	for _, pulse := range fieldsPulse {
+		if l := len(pulse); l < minPulse {
+			minPulse = l
 		}
 	}
 
-	// If there wasn't 2 differente sequence of bits
-	// It means we can't say if it is a dot or a dash
-	// So we need to verify the pauses
-	if len(m) < 2 {
-		fmt.Println(fieldsPause)
-		return 0
+	for _, pause := range fieldsPause {
+		if l := len(pause); l < minPause {
+			minPause = l
+		}
 	}
 
-	// Now we need to get the smallest len
-	lens := []int{}
-	for _, v := range m {
-		lens = append(lens, v)
+	return min(minPulse, minPause)
+}
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	} else {
+		return b
 	}
-
-	sort.Ints(lens)
-
-	return lens[0]
 }
 
 var MORSE_CODE map[string]string
